@@ -24,46 +24,6 @@ module Delayed
   end
 end
 
-module Delayed
-  module Mongoid
-    module Job
-      class Delayed::Mongoid::Job::Mock
-        def self.after_destroy(method, *args)
-        end
-        def self.after_create(method, *args)
-        end
-        def self.after_update(method, *args)
-        end
-      end
-    end
-  end
-end
-
-module Delayed
-  module MongoMapper
-    module Job
-      class Delayed::MongoMapper::Job::Mock
-        def self.after_destroy(method, *args)
-        end
-        def self.after_create(method, *args)
-        end
-        def self.after_update(method, *args)
-        end
-      end
-    end
-  end
-end
-
-module Delayed
-  module Sequel
-    module Job
-      class Delayed::Sequel::Job::Mock
-        
-      end
-    end
-  end
-end
-
 class NumWorkers
   def initialize(count)
     @count = count
@@ -75,8 +35,5 @@ class NumWorkers
 end
 
 Delayed::ActiveRecord::Job::Mock.send(:include, Delayed::Workless::Scaler)
-Delayed::Mongoid::Job::Mock.send(:include, Delayed::Workless::Scaler)
-Delayed::MongoMapper::Job::Mock.send(:include, Delayed::Workless::Scaler)
-Delayed::Sequel::Job::Mock.send(:include, Delayed::Workless::Scaler)
 
 ENV['APP_NAME'] = 'TestHerokuApp'

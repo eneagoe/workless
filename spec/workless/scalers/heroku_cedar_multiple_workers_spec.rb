@@ -108,7 +108,7 @@ describe Delayed::Workless::Scaler::HerokuCedar do
 
           it "should fetch the number of wokers exactly once for 1000 jobs" do
             if_there_are_jobs 1000
-            Delayed::Workless::Scaler::HerokuCedar.client.stub(:post_ps_scale).and_return(true)
+            Delayed::Workless::Scaler::HerokuCedar.client.formation.stub(:update).and_return(true)
             Delayed::Workless::Scaler::HerokuCedar.should_receive(:workers).exactly(:once)
           end
         end
@@ -200,14 +200,14 @@ describe Delayed::Workless::Scaler::HerokuCedar do
   private
 
   def if_there_are_jobs(num)
-    Delayed::Workless::Scaler::HerokuCedar.should_receive(:jobs).any_number_of_times.and_return(NumWorkers.new(num))
+    Delayed::Workless::Scaler::HerokuCedar.should_receive(:jobs).at_least(1).times.and_return(NumWorkers.new(num))
   end
 
   def should_scale_workers_to(num)
-    Delayed::Workless::Scaler::HerokuCedar.client.should_receive(:post_ps_scale).once.with(ENV['APP_NAME'], 'worker', num)
+    Delayed::Workless::Scaler::HerokuCedar.client.formation.should_receive(:update).once.with(ENV['APP_NAME'], 'worker', {"quantity" => num.to_s})
   end
 
   def should_not_scale_workers
-    Delayed::Workless::Scaler::HerokuCedar.client.should_not_receive(:post_ps_scale)
+    Delayed::Workless::Scaler::HerokuCedar.client.formation.should_not_receive(:update)
   end
 end
